@@ -1,2 +1,2 @@
-use_bundler: true
+use_bundler: false
 region: ap-northeast-1

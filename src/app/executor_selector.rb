@@ -6,9 +6,12 @@ module App
   class ExecutorSelector
     EXECUTORS = {
       # function_name(Symbol): executor(Class)
-      's3-timestamp-renamer': App::Executor::S3TimestampRenamer,
-      'code-deploy-performer': App::Executor::CodeDeployPerformer,
-      'cloud-front-invalidation': App::Executor::CloudFrontInvalidation,
+      's3-timestamp-renamer-production':     App::Executor::S3TimestampRenamer,
+      's3-timestamp-renamer-staging':        App::Executor::S3TimestampRenamer,
+      'code-deploy-performer-production':    App::Executor::CodeDeployPerformer,
+      'code-deploy-performer-staging':       App::Executor::CodeDeployPerformer,
+      'cloud-front-invalidation-production': App::Executor::CloudFrontInvalidation,
+      'cloud-front-invalidation-staging':    App::Executor::CloudFrontInvalidation,
     }.freeze
 
     def self.executor(function_name)

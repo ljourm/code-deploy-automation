@@ -3,6 +3,7 @@
 ## 概要
 
 - CloudFrontのInvalidationを作成する。
+- CodeDeployの終了通知 (Amazon SNS) をトリガーとすることを想定している。
 - CodeDeployのアプリケーション名から作成先を決定する。
 
 ## IAM roles

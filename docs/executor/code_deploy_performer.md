@@ -1,9 +1,10 @@
-# Cloud Front Invalidation
+# Code Deploy Performer
 
 ## 概要
 
 - CodeDeployを実行する。
-- 実行するCodeDeployのアプリケーション名は変更されたS3ファイル名からけて地する。
+- S3のファイル変更がトリガーとなって実行されることを想定している。
+- 実行するCodeDeployのアプリケーション名は変更されたS3ファイル名から決定する。
 
 ## IAM roles
 
