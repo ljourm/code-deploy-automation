@@ -52,18 +52,18 @@ jobs:
         id: function_exists
         run: |
           aws lambda list-functions \
-            | grep "\"FunctionName\": \"lambda-template-for-ruby-production\""
+            | grep "\"FunctionName\": \"s3-timestamp-renamer-production\""
         continue-on-error: true
 
       # see: https://awscli.amazonaws.com/v2/documentation/api/latest/reference/lambda/create-function.html
       - name: deploy to lambda (create)
         run: |
           aws lambda create-function \
-            --function-name lambda-template-for-ruby-production \
+            --function-name s3-timestamp-renamer-production \
             --runtime ruby2.7 \
             --handler main.lambda_handler \
-            --role ${{ secrets.AWS_LAMBDA_ROLE_ARN_PRODUCTION }} \
-            --tags "created_by=lambda-template-for-ruby" \
+            --role ${{ secrets.AWS_LAMBDA_S3_TIMESTAMP_RENAMER_ROLE_ARN_PRODUCTION }} \
+            --tags "created_by=code-deploy-automation" \
             --zip-file fileb://package.zip \
             --environment "Variables={APP_ENV=production}" \
             --publish
@@ -73,8 +73,71 @@ jobs:
       - name: deploy to lambda (update)
         run: |
           aws lambda update-function-code \
-            --function-name lambda-template-for-ruby-production \
+            --function-name s3-timestamp-renamer-production \
             --zip-file fileb://package.zip \
             --publish
         if: steps.function_exists.outcome == 'success'
 
+      # code-deploy-performer-production
+      # see: https://awscli.amazonaws.com/v2/documentation/api/latest/reference/lambda/list-functions.html
+      - name: check lambda function exists
+        id: function_exists
+        run: |
+          aws lambda list-functions \
+            | grep "\"FunctionName\": \"code-deploy-performer-production\""
+        continue-on-error: true
+
+      # see: https://awscli.amazonaws.com/v2/documentation/api/latest/reference/lambda/create-function.html
+      - name: deploy to lambda (create)
+        run: |
+          aws lambda create-function \
+            --function-name code-deploy-performer-production \
+            --runtime ruby2.7 \
+            --handler main.lambda_handler \
+            --role ${{ secrets.AWS_LAMBDA_CODE_DEPLOY_PERFORMER_ROLE_ARN_PRODUCTION }} \
+            --tags "created_by=code-deploy-automation" \
+            --zip-file fileb://package.zip \
+            --environment "Variables={APP_ENV=production}" \
+            --publish
+        if: steps.function_exists.outcome == 'failure'
+
+      # see: https://awscli.amazonaws.com/v2/documentation/api/latest/reference/lambda/update-function-code.html
+      - name: deploy to lambda (update)
+        run: |
+          aws lambda update-function-code \
+            --function-name code-deploy-performer-production \
+            --zip-file fileb://package.zip \
+            --publish
+        if: steps.function_exists.outcome == 'success'
+
+      # cloud-front-invalidation-production
+      # see: https://awscli.amazonaws.com/v2/documentation/api/latest/reference/lambda/list-functions.html
+      - name: check lambda function exists
+        id: function_exists
+        run: |
+          aws lambda list-functions \
+            | grep "\"FunctionName\": \"cloud-front-invalidation-production\""
+        continue-on-error: true
+
+      # see: https://awscli.amazonaws.com/v2/documentation/api/latest/reference/lambda/create-function.html
+      - name: deploy to lambda (create)
+        run: |
+          aws lambda create-function \
+            --function-name cloud-front-invalidation-production \
+            --runtime ruby2.7 \
+            --handler main.lambda_handler \
+            --role ${{ secrets.AWS_LAMBDA_CLOUD_FRONT_INVALIDATION_ROLE_ARN_PRODUCTION }} \
+            --tags "created_by=code-deploy-automation" \
+            --zip-file fileb://package.zip \
+            --environment "Variables={APP_ENV=production}" \
+            --publish
+        if: steps.function_exists.outcome == 'failure'
+
+      # see: https://awscli.amazonaws.com/v2/documentation/api/latest/reference/lambda/update-function-code.html
+      - name: deploy to lambda (update)
+        run: |
+          aws lambda update-function-code \
+            --function-name cloud-front-invalidation-production \
+            --zip-file fileb://package.zip \
+            --publish
+        if: steps.function_exists.outcome == 'success'

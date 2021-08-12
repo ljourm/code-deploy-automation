@@ -1,7 +1,15 @@
 env_name: staging
 trigger_branch_name: develop
 lambda_functions:
-  - name: lambda-template-for-ruby-staging
-    secret_role_arn_name: AWS_LAMBDA_ROLE_ARN_STAGING
+  - name: s3-timestamp-renamer-staging
+    secret_role_arn_name: AWS_LAMBDA_S3_TIMESTAMP_RENAMER_ROLE_ARN_PRODUCTION
     tags:
-      - created_by: lambda-template-for-ruby
+      created_by: code-deploy-automation
+  - name: code-deploy-performer-staging
+    secret_role_arn_name: AWS_LAMBDA_CODE_DEPLOY_PERFORMER_ROLE_ARN_PRODUCTION
+    tags:
+      created_by: code-deploy-automation
+  - name: cloud-front-invalidation-staging
+    secret_role_arn_name: AWS_LAMBDA_CLOUD_FRONT_INVALIDATION_ROLE_ARN_PRODUCTION
+    tags:
+      created_by: code-deploy-automation

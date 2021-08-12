@@ -1,4 +1,4 @@
-RSpec.describe App::Executor::SampleLambdaFunctionList do
+RSpec.describe App::Executor::RenameWhenTheTime do
   let(:executor) { described_class.new(event: event, context: context) }
   let(:event) { {} }
   let(:context) { {} }
