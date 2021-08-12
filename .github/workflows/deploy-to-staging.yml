@@ -49,7 +49,7 @@ jobs:
       # **** lambda-template-for-ruby-staging ****
       # see: https://awscli.amazonaws.com/v2/documentation/api/latest/reference/lambda/list-functions.html
       - name: check lambda function exists
-        id: function_exists
+        id: function_exists_1
         run: |
           aws lambda list-functions \
             | grep "\"FunctionName\": \"s3-timestamp-renamer-staging\""
@@ -67,7 +67,7 @@ jobs:
             --zip-file fileb://package.zip \
             --environment "Variables={APP_ENV=staging}" \
             --publish
-        if: steps.function_exists.outcome == 'failure'
+        if: steps.function_exists_1.outcome == 'failure'
 
       # see: https://awscli.amazonaws.com/v2/documentation/api/latest/reference/lambda/update-function-code.html
       - name: deploy to lambda (update)
@@ -76,12 +76,12 @@ jobs:
             --function-name s3-timestamp-renamer-staging \
             --zip-file fileb://package.zip \
             --publish
-        if: steps.function_exists.outcome == 'success'
+        if: steps.function_exists_1.outcome == 'success'
 
-      # code-deploy-performer-staging
+      # **** code-deploy-performer-staging ****
       # see: https://awscli.amazonaws.com/v2/documentation/api/latest/reference/lambda/list-functions.html
       - name: check lambda function exists
-        id: function_exists
+        id: function_exists_2
         run: |
           aws lambda list-functions \
             | grep "\"FunctionName\": \"code-deploy-performer-staging\""
@@ -99,7 +99,7 @@ jobs:
             --zip-file fileb://package.zip \
             --environment "Variables={APP_ENV=staging}" \
             --publish
-        if: steps.function_exists.outcome == 'failure'
+        if: steps.function_exists_2.outcome == 'failure'
 
       # see: https://awscli.amazonaws.com/v2/documentation/api/latest/reference/lambda/update-function-code.html
       - name: deploy to lambda (update)
@@ -108,12 +108,12 @@ jobs:
             --function-name code-deploy-performer-staging \
             --zip-file fileb://package.zip \
             --publish
-        if: steps.function_exists.outcome == 'success'
+        if: steps.function_exists_2.outcome == 'success'
 
-      # cloud-front-invalidation-staging
+      # **** cloud-front-invalidation-staging ****
       # see: https://awscli.amazonaws.com/v2/documentation/api/latest/reference/lambda/list-functions.html
       - name: check lambda function exists
-        id: function_exists
+        id: function_exists_3
         run: |
           aws lambda list-functions \
             | grep "\"FunctionName\": \"cloud-front-invalidation-staging\""
@@ -131,7 +131,7 @@ jobs:
             --zip-file fileb://package.zip \
             --environment "Variables={APP_ENV=staging}" \
             --publish
-        if: steps.function_exists.outcome == 'failure'
+        if: steps.function_exists_3.outcome == 'failure'
 
       # see: https://awscli.amazonaws.com/v2/documentation/api/latest/reference/lambda/update-function-code.html
       - name: deploy to lambda (update)
