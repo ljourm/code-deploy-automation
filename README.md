@@ -1,4 +1,10 @@
-# Lambda template for ruby
+# Code deploy by lambda
+
+## Forked
+
+Forked from [Lambda template for ruby](https://github.com/ljourm/lambda-template-for-ruby)
+
+## 概要
 
 ## 概要
 
