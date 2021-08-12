@@ -8,10 +8,10 @@ module App
         bucket_objects.each do |object|
           filename = object.key
 
-          filename.match?(/(.*)\.#{current_str_time}/) do
+          filename.match(/(.*)\.#{current_str_time}/) do
             dest_filename = Regexp.last_match(1)
 
-            next unless config[:code_deploy_filenames].include?(dest_filename)
+            next unless filename_include?(dest_filename)
 
             find_second_file_and_rename(dest_filename)
             rename(object, filename, dest_filename)
@@ -51,6 +51,12 @@ module App
       # @return [String] 現在2021-08-01 18:30:00の場合 -> '2021080118'(日本時間)が返却される
       def current_str_time
         @current_str_time ||= Time.now.localtime('+09:00').strftime('%Y%m%d%H')
+      end
+
+      def filename_include?(name)
+        config[:code_deploy].any? do |c|
+          c[:filepath] == name
+        end
       end
 
       def find_second_file_and_rename(filename)

@@ -16,7 +16,7 @@ module App
           message: "code deploy is performed.",
           application_name: code_deploy_config[:application_name],
           deployment_group_name: code_deploy_config[:group_name],
-          bucket: code_deploy_config[:s3_bucket_name],
+          bucket: config[:s3_bucket_name],
           filepath: code_deploy_config[:filepath],
         )
       end
@@ -37,7 +37,7 @@ module App
           revision: {
             revision_type: 'S3',
             s3_location: {
-              bucket: code_deploy_config[:s3_bucket_name],
+              bucket: config[:s3_bucket_name],
               key: code_deploy_config[:filepath],
               bundle_type: 'zip',
             },
