@@ -40,6 +40,7 @@ module App
         return @slack_text unless @slack_text.nil?
 
         text = <<~STR
+          <<Code Deploy Notification>>
           name: #{event_message[:region]} / #{event_message[:applicationName]} / #{event_message[:deploymentGroupName]}
           id: #{event_message[:deploymentId]}
 
