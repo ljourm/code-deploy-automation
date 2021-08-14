@@ -51,10 +51,10 @@ module App
       end
 
       def event_message
-        return @message unless @message.nil?
+        return @event_message unless @event_message.nil?
 
-        message_str = event['Records'][0]['Sns']['Message']
-        @message = JSON.parse(message_str, symbolize_names: true)
+        event_message_str = event['Records'][0]['Sns']['Message']
+        @event_message = JSON.parse(event_message, symbolize_names: true)
       end
 
       def current_str_time
