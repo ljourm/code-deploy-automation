@@ -40,17 +40,21 @@ module App
       end
 
       def distribution_id
-        message_str = event['Records'][0]['Sns']['Message']
-        message = JSON.parse(message_str, symbolize_names: true)
-
         target = config[:code_deploy].find do |c|
-          c[:application_name] == message[:applicationName] &&
-            c[:group_name] == message[:deploymentGroupName]
+          c[:application_name] == event_message[:applicationName] &&
+            c[:group_name] == event_message[:deploymentGroupName]
         end
 
         raise StandardError, 'distribution_id is not be found.' if target.nil?
 
         target[:cloud_front][:distribution_id]
+      end
+
+      def event_message
+        return @message unless @message.nil?
+
+        message_str = event['Records'][0]['Sns']['Message']
+        @message = JSON.parse(message_str, symbolize_names: true)
       end
 
       def current_str_time

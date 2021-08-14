@@ -10,13 +10,7 @@ module App
         # see: https://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/CodeDeploy/Client.html#create_deployment-instance_method
         client.create_deployment(params_create_deployment)
 
-        logger.info(
-          message: 'code deploy is performed.',
-          application_name: code_deploy_config[:application_name],
-          deployment_group_name: code_deploy_config[:group_name],
-          bucket: config[:s3_bucket_name],
-          filepath: code_deploy_config[:filepath],
-        )
+        output_info_log
       end
 
       private
@@ -60,6 +54,16 @@ module App
         raise StandardError, 'too many files changed' if @event['Records'].size > 1
 
         @changed_filepath ||= @event['Records'].first['s3']['object']['key']
+      end
+
+      def output_info_log
+        logger.info(
+          message: 'code deploy is performed.',
+          application_name: code_deploy_config[:application_name],
+          deployment_group_name: code_deploy_config[:group_name],
+          bucket: config[:s3_bucket_name],
+          filepath: code_deploy_config[:filepath],
+        )
       end
     end
   end

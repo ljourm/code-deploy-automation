@@ -7,10 +7,17 @@ RSpec.describe App::Config do
 
     let(:expected_value) do
       {
-        common_message: 'This is common message',
-        env_message: 'This env is test.',
+        code_deploy: [
+          {
+            application_name: 'test_20210712',
+            group_name: 'blue-green',
+            filepath: 'hoge/fuga.zip',
+            cloud_front: { distribution_id: 'E1BFT3P6LD2SCL' },
+          },
+        ],
         log_level: 'FATAL',
         region: 'ap-northeast-1',
+        s3_bucket_name: 'code-deploy-automation',
       }
     end
 
