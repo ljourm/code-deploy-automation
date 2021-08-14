@@ -30,7 +30,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-northeast-1
 
-      # **** lambda-template-for-ruby-production ****
+      # **** s3-timestamp-renamer-production ****
       # see: https://awscli.amazonaws.com/v2/documentation/api/latest/reference/lambda/list-functions.html
       - name: check lambda function exists
         id: function_exists_1
@@ -124,4 +124,5 @@ jobs:
             --function-name cloud-front-invalidation-production \
             --zip-file fileb://package.zip \
             --publish
-        if: steps.function_exists.outcome == 'success'
+        if: steps.function_exists_3.outcome == 'success'
+
