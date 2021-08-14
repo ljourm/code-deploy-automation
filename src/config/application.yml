@@ -1,2 +1,9 @@
 region: ap-northeast-1
-common_message: This is common message
+s3_bucket_name: code-deploy-automation
+
+code_deploy:
+  - filepath: hoge/fuga.zip
+    application_name: test_20210712
+    group_name: blue-green
+    cloud_front:
+      distribution_id: E1BFT3P6LD2SCL

@@ -1,4 +1,8 @@
-# Lambda template for ruby
+# Code deploy by lambda
+
+## Forked
+
+Forked from [Lambda template for ruby](https://github.com/ljourm/lambda-template-for-ruby)
 
 ## 概要
 
@@ -32,4 +36,7 @@ AWS Lambda + Ruby を使用する際のテンプレート。
 
 ## Executor
 
-- [sample_lambda_function_list](./docs/executor/sample_lambda_function_list.md)
+- [s3_timestamp_renamer](./docs/executor/s3_timestamp_renamer.md)
+- [code_deploy_performer](./docs/executor/code_deploy_performer.md)
+- [cloud_front_invalidation](./docs/executor/cloud_front_invalidation.md)
+- [code_deploy_slack_notification](./docs/executor/code_deploy_slack_notification.md)

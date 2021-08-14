@@ -1,7 +1,19 @@
 env_name: production
 trigger_branch_name: master
 lambda_functions:
-  - name: lambda-template-for-ruby-production
-    secret_role_arn_name: AWS_LAMBDA_ROLE_ARN_PRODUCTION
+  - name: s3-timestamp-renamer-production
+    secret_role_arn_name: AWS_LAMBDA_S3_TIMESTAMP_RENAMER_ROLE_ARN_PRODUCTION
     tags:
-      created_by: lambda-template-for-ruby
+      created_by: code-deploy-automation
+  - name: code-deploy-performer-production
+    secret_role_arn_name: AWS_LAMBDA_CODE_DEPLOY_PERFORMER_ROLE_ARN_PRODUCTION
+    tags:
+      created_by: code-deploy-automation
+  - name: cloud-front-invalidation-production
+    secret_role_arn_name: AWS_LAMBDA_CLOUD_FRONT_INVALIDATION_ROLE_ARN_PRODUCTION
+    tags:
+      created_by: code-deploy-automation
+  - name: code-deploy-slack-notification-production
+    secret_role_arn_name: AWS_LAMBDA_CODE_DEPLOY_SLACK_NOTIFICATION_ROLE_ARN_PRODUCTION
+    tags:
+      created_by: code-deploy-automation

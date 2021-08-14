@@ -17,22 +17,6 @@ jobs:
         with:
           ruby-version: 2.7.4
 
-      - uses: actions/cache@v2
-        with:
-          path: vendor/bundle
-          key: bundle-${{ hashFiles('**/Gemfile.lock') }}
-
-      - name: bundle config
-        run: |
-          bundle config set path 'vendor/bundle'
-          bundle config set deployment 'true'
-          bundle config set without 'development test'
-
-      - name: bundle install
-        run: |
-          cd src
-          bundle install
-
       - name: create lambda package
         run: |
           cd src
@@ -46,35 +30,131 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-northeast-1
 
-      # **** lambda-template-for-ruby-staging ****
+      # **** s3-timestamp-renamer-staging ****
       # see: https://awscli.amazonaws.com/v2/documentation/api/latest/reference/lambda/list-functions.html
       - name: check lambda function exists
-        id: function_exists
+        id: function_exists_1
         run: |
           aws lambda list-functions \
-            | grep "\"FunctionName\": \"lambda-template-for-ruby-staging\""
+            | grep "\"FunctionName\": \"s3-timestamp-renamer-staging\""
         continue-on-error: true
 
       # see: https://awscli.amazonaws.com/v2/documentation/api/latest/reference/lambda/create-function.html
       - name: deploy to lambda (create)
         run: |
           aws lambda create-function \
-            --function-name lambda-template-for-ruby-staging \
+            --function-name s3-timestamp-renamer-staging \
             --runtime ruby2.7 \
             --handler main.lambda_handler \
-            --role ${{ secrets.AWS_LAMBDA_ROLE_ARN_STAGING }} \
-            --tags "{:created_by=>"lambda-template-for-ruby"}=" \
+            --role ${{ secrets.AWS_LAMBDA_S3_TIMESTAMP_RENAMER_ROLE_ARN_PRODUCTION }} \
+            --tags "created_by=code-deploy-automation" \
             --zip-file fileb://package.zip \
             --environment "Variables={APP_ENV=staging}" \
             --publish
-        if: steps.function_exists.outcome == 'failure'
+        if: steps.function_exists_1.outcome == 'failure'
 
       # see: https://awscli.amazonaws.com/v2/documentation/api/latest/reference/lambda/update-function-code.html
       - name: deploy to lambda (update)
         run: |
           aws lambda update-function-code \
-            --function-name lambda-template-for-ruby-staging \
+            --function-name s3-timestamp-renamer-staging \
             --zip-file fileb://package.zip \
             --publish
-        if: steps.function_exists.outcome == 'success'
+        if: steps.function_exists_1.outcome == 'success'
+
+      # **** code-deploy-performer-staging ****
+      # see: https://awscli.amazonaws.com/v2/documentation/api/latest/reference/lambda/list-functions.html
+      - name: check lambda function exists
+        id: function_exists_2
+        run: |
+          aws lambda list-functions \
+            | grep "\"FunctionName\": \"code-deploy-performer-staging\""
+        continue-on-error: true
+
+      # see: https://awscli.amazonaws.com/v2/documentation/api/latest/reference/lambda/create-function.html
+      - name: deploy to lambda (create)
+        run: |
+          aws lambda create-function \
+            --function-name code-deploy-performer-staging \
+            --runtime ruby2.7 \
+            --handler main.lambda_handler \
+            --role ${{ secrets.AWS_LAMBDA_CODE_DEPLOY_PERFORMER_ROLE_ARN_PRODUCTION }} \
+            --tags "created_by=code-deploy-automation" \
+            --zip-file fileb://package.zip \
+            --environment "Variables={APP_ENV=staging}" \
+            --publish
+        if: steps.function_exists_2.outcome == 'failure'
+
+      # see: https://awscli.amazonaws.com/v2/documentation/api/latest/reference/lambda/update-function-code.html
+      - name: deploy to lambda (update)
+        run: |
+          aws lambda update-function-code \
+            --function-name code-deploy-performer-staging \
+            --zip-file fileb://package.zip \
+            --publish
+        if: steps.function_exists_2.outcome == 'success'
+
+      # **** cloud-front-invalidation-staging ****
+      # see: https://awscli.amazonaws.com/v2/documentation/api/latest/reference/lambda/list-functions.html
+      - name: check lambda function exists
+        id: function_exists_3
+        run: |
+          aws lambda list-functions \
+            | grep "\"FunctionName\": \"cloud-front-invalidation-staging\""
+        continue-on-error: true
+
+      # see: https://awscli.amazonaws.com/v2/documentation/api/latest/reference/lambda/create-function.html
+      - name: deploy to lambda (create)
+        run: |
+          aws lambda create-function \
+            --function-name cloud-front-invalidation-staging \
+            --runtime ruby2.7 \
+            --handler main.lambda_handler \
+            --role ${{ secrets.AWS_LAMBDA_CLOUD_FRONT_INVALIDATION_ROLE_ARN_PRODUCTION }} \
+            --tags "created_by=code-deploy-automation" \
+            --zip-file fileb://package.zip \
+            --environment "Variables={APP_ENV=staging}" \
+            --publish
+        if: steps.function_exists_3.outcome == 'failure'
+
+      # see: https://awscli.amazonaws.com/v2/documentation/api/latest/reference/lambda/update-function-code.html
+      - name: deploy to lambda (update)
+        run: |
+          aws lambda update-function-code \
+            --function-name cloud-front-invalidation-staging \
+            --zip-file fileb://package.zip \
+            --publish
+        if: steps.function_exists_3.outcome == 'success'
+
+      # **** code-deploy-slack-notification-staging ****
+      # see: https://awscli.amazonaws.com/v2/documentation/api/latest/reference/lambda/list-functions.html
+      - name: check lambda function exists
+        id: function_exists_4
+        run: |
+          aws lambda list-functions \
+            | grep "\"FunctionName\": \"code-deploy-slack-notification-staging\""
+        continue-on-error: true
+
+      # see: https://awscli.amazonaws.com/v2/documentation/api/latest/reference/lambda/create-function.html
+      - name: deploy to lambda (create)
+        run: |
+          aws lambda create-function \
+            --function-name code-deploy-slack-notification-staging \
+            --runtime ruby2.7 \
+            --handler main.lambda_handler \
+            --role ${{ secrets.AWS_LAMBDA_CODE_DEPLOY_SLACK_NOTIFICATION_ROLE_ARN_PRODUCTION }} \
+            --tags "created_by=code-deploy-automation" \
+            --zip-file fileb://package.zip \
+            --environment "Variables={APP_ENV=staging}" \
+            --publish
+        if: steps.function_exists_4.outcome == 'failure'
+
+      # see: https://awscli.amazonaws.com/v2/documentation/api/latest/reference/lambda/update-function-code.html
+      - name: deploy to lambda (update)
+        run: |
+          aws lambda update-function-code \
+            --function-name code-deploy-slack-notification-staging \
+            --zip-file fileb://package.zip \
+            --publish
+        if: steps.function_exists_4.outcome == 'success'
 

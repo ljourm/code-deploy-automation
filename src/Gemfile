@@ -3,7 +3,10 @@ source 'https://rubygems.org'
 ruby '2.7.4'
 
 group :development, :test do
-  gem 'aws-sdk-lambda'
+  gem 'aws-sdk-cloudfront'
+  gem 'aws-sdk-codedeploy'
+  gem 'aws-sdk-s3'
+
   gem 'dotenv'
 
   gem 'rspec', require: false
