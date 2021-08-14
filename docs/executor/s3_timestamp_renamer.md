@@ -28,7 +28,7 @@
 
 以下を紐付け
 - `LogWriteAccessForLambdaFunction`
-  - [lambda_code_writer](../aws_iam/lambda_code_writer.md)
+  - [lambda_code_writer](./iam_log_writer.md)
 - `S3ReadAccessForTimestampRenamer`
 
 ## IAM policies
