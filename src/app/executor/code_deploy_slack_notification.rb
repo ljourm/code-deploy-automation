@@ -17,7 +17,8 @@ module App
         )
 
         uri = URI.parse(ENV['SLACK_WEBHOOK_URI'])
-        http = Net::HTTP.new(uri.host)
+        http = Net::HTTP.new(uri.host, uri.port)
+        http.use_ssl = true
         response = http.post(uri.path, { text: slack_text }.to_json, HTTP_HEADERS)
 
         logger.info(
