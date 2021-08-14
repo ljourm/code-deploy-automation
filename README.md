@@ -39,3 +39,4 @@ AWS Lambda + Ruby を使用する際のテンプレート。
 - [s3_timestamp_renamer](./docs/executor/s3_timestamp_renamer.md)
 - [code_deploy_performer](./docs/executor/code_deploy_performer.md)
 - [cloud_front_invalidation](./docs/executor/cloud_front_invalidation.md)
+- [code_deploy_slack_notification](./docs/executor/code_deploy_slack_notification.md)

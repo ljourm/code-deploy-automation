@@ -13,3 +13,7 @@ lambda_functions:
     secret_role_arn_name: AWS_LAMBDA_CLOUD_FRONT_INVALIDATION_ROLE_ARN_PRODUCTION
     tags:
       created_by: code-deploy-automation
+  - name: code-deploy-slack-notification-staging
+    secret_role_arn_name: AWS_LAMBDA_CODE_DEPLOY_SLACK_NOTIFICATION_ROLE_ARN_PRODUCTION
+    tags:
+      created_by: code-deploy-automation
