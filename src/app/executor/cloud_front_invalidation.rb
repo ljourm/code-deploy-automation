@@ -1,10 +1,13 @@
 require 'json'
 require 'aws-sdk-cloudfront'
 require './lib/app/executor/base'
+require './app/lib/sns_message_parser'
 
 module App
   module Executor
     class CloudFrontInvalidation < Base
+      include App::Lib::SnsMessageParser
+
       def execute
         # see: https://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/CloudFront/Client.html#create_invalidation-instance_method
         client.create_invalidation(params_create_invalidation)
@@ -48,13 +51,6 @@ module App
         raise StandardError, 'distribution_id is not be found.' if target.nil?
 
         target[:cloud_front][:distribution_id]
-      end
-
-      def event_message
-        return @event_message unless @event_message.nil?
-
-        event_message_str = event['Records'][0]['Sns']['Message']
-        @event_message = JSON.parse(event_message, symbolize_names: true)
       end
 
       def current_str_time
