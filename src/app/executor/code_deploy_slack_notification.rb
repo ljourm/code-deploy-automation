@@ -16,10 +16,7 @@ module App
           },
         )
 
-        uri = URI.parse(ENV['SLACK_WEBHOOK_URI'])
-        http = Net::HTTP.new(uri.host, uri.port)
-        http.use_ssl = true
-        response = http.post(uri.path, { text: slack_text }.to_json, HTTP_HEADERS)
+        response = post_message
 
         logger.info(
           message: 'post result',
@@ -32,16 +29,25 @@ module App
 
       private
 
+      def post_message
+        uri = URI.parse(ENV['SLACK_WEBHOOK_URI'])
+        http = Net::HTTP.new(uri.host, uri.port)
+        http.use_ssl = true
+        http.post(uri.path, { text: slack_text }.to_json, HTTP_HEADERS)
+      end
+
       def slack_text # rubocop:disable Metrics/MethodLength, Metrics/AbcSize:
         return @slack_text unless @slack_text.nil?
 
         text = <<~STR
-          name: #{event_message[:applicationName]} / #{event_message[:deploymentGroupName]}
+          name: #{event_message[:region]} / #{event_message[:applicationName]} / #{event_message[:deploymentGroupName]}
           id: #{event_message[:deploymentId]}
-          created_at / completed_at: #{event_message[:createTime]} / #{event_message[:completeTime]}
 
-          code deploy Trigger: #{event_message[:eventTriggerName]}
-          status: #{event_message[:status]}
+          created_at:   #{event_message[:createTime]}
+          completed_at: #{event_message[:completeTime]}
+
+          trigger: #{event_message[:eventTriggerName]}
+          status:  #{event_message[:status]}
         STR
 
         @slack_text = if exists_error_information?
