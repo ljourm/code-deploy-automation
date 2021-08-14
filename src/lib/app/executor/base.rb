@@ -13,6 +13,14 @@ module App
         @event = event
         @context = context
       end
+
+      def event
+        @event
+      end
+
+      def context
+        @context
+      end
     end
   end
 end

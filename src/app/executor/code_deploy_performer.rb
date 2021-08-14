@@ -5,15 +5,13 @@ module App
   module Executor
     class CodeDeployPerformer < Base
       def execute
-        if code_deploy_config.nil?
-          logger.info(message: "skip code deploy because #{changed_filepath} is not listed.")
-        end
+        logger.info(message: "skip code deploy because #{changed_filepath} is not listed.") if code_deploy_config.nil?
 
         # see: https://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/CodeDeploy/Client.html#create_deployment-instance_method
         client.create_deployment(params_create_deployment)
 
         logger.info(
-          message: "code deploy is performed.",
+          message: 'code deploy is performed.',
           application_name: code_deploy_config[:application_name],
           deployment_group_name: code_deploy_config[:group_name],
           bucket: config[:s3_bucket_name],

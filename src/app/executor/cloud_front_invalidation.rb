@@ -1,3 +1,4 @@
+require 'json'
 require 'aws-sdk-cloudfront'
 require './lib/app/executor/base'
 
@@ -39,8 +40,17 @@ module App
       end
 
       def distribution_id
-        # TODO
-        config[:code_deploy][0][:cloud_front][:distribution_id]
+        message_str = event['Records'][0]['Sns']['Message']
+        message = JSON.parse(message_str, symbolize_names: true)
+
+        target = config[:code_deploy].find do |c|
+          c[:application_name] == message[:applicationName] &&
+            c[:group_name] == message[:deploymentGroupName]
+        end
+
+        raise StandardError, 'distribution_id is not be found.' if target.nil?
+
+        target[:cloud_front][:distribution_id]
       end
 
       def current_str_time
