@@ -7,3 +7,4 @@ code_deploy:
     group_name: blue-green
     cloud_front:
       distribution_id: E1BFT3P6LD2SCL
+log_level: DEBUG
