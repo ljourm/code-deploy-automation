@@ -26,6 +26,8 @@ module App
 
         text = <<~STR
           [Code Deploy Notification]
+          #{status_emoji(event_message[:status])} #{event_message[:status]}
+
           name: #{event_message[:region]} / #{event_message[:applicationName]} / #{event_message[:deploymentGroupName]}
           id: #{event_message[:deploymentId]}
 
@@ -33,7 +35,6 @@ module App
           completed_at: #{event_message[:completeTime]}
 
           trigger: #{event_message[:eventTriggerName]}
-          status: #{event_message[:status]}
         STR
 
         @slack_text = if exists_error_information?
@@ -56,6 +57,21 @@ module App
             message: #{error_information[:ErrorMessage]}
             rollback: #{error_information[:rollbackInformation]}
         STR
+      end
+
+      def status_emoji(status) # rubocop:disable Metrics/MethodLength:
+        case status
+        when 'CREATED'
+          ':arrow_forward:'
+        when 'SUCCEEDED'
+          ':rocket:'
+        when 'FAILED'
+          ':broken_heart:'
+        when 'ABORTED'
+          ':no_entry_sign:'
+        else
+          ':grey_question:'
+        end
       end
     end
   end
