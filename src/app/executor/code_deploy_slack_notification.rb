@@ -1,22 +1,22 @@
 require 'net/http'
 require './lib/app/executor/base'
 require './app/lib/sns_message_parser'
+require './app/lib/slack_notification'
 
 module App
   module Executor
     class CodeDeploySlackNotification < Base
       include App::Lib::SnsMessageParser
+      include App::Lib::SlackNotification
 
-      HTTP_HEADERS = { 'Content-Type' => 'application/json' }.freeze
-
-      def execute # rubocop:disable Metrics/MethodLength
+      def execute
         logger.debug(
           {
             slack_text: slack_text,
           },
         )
 
-        response = post_message
+        response = notify_to_slack(slack_text, ENV['SLACK_WEBHOOK_URI'])
 
         logger.info(
           message: 'post result',
@@ -28,13 +28,6 @@ module App
       end
 
       private
-
-      def post_message
-        uri = URI.parse(ENV['SLACK_WEBHOOK_URI'])
-        http = Net::HTTP.new(uri.host, uri.port)
-        http.use_ssl = true
-        http.post(uri.path, { text: slack_text }.to_json, HTTP_HEADERS)
-      end
 
       def slack_text # rubocop:disable Metrics/MethodLength, Metrics/AbcSize:
         return @slack_text unless @slack_text.nil?
