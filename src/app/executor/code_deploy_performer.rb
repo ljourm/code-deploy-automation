@@ -1,14 +1,19 @@
 require 'aws-sdk-codedeploy'
 require './lib/app/executor/base'
+require './app/lib/slack_notification'
 
 module App
   module Executor
     class CodeDeployPerformer < Base
+      include App::Lib::SlackNotification
+
       def execute
         logger.info(message: "skip code deploy because #{changed_filepath} is not listed.") if code_deploy_config.nil?
 
         # see: https://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/CodeDeploy/Client.html#create_deployment-instance_method
-        client.create_deployment(params_create_deployment)
+        res = client.create_deployment(params_create_deployment)
+
+        notify_to_slack(slack_text(res.deployment_id), ENV['SLACK_WEBHOOK_URI'])
 
         output_info_log
       end
@@ -54,6 +59,18 @@ module App
         raise StandardError, 'too many files changed' if @event['Records'].size > 1
 
         @changed_filepath ||= @event['Records'].first['s3']['object']['key']
+      end
+
+      def slack_text(deployment_id)
+        return @slack_text unless @slack_text.nil?
+
+        <<~STR
+          [Code Deploy Notification]
+          :raising_hand: Code Deploy is performed manually.
+
+          name: #{config[:region]} / #{code_deploy_config[:application_name]} / #{code_deploy_config[:group_name]}
+          id: #{deployment_id}
+        STR
       end
 
       def output_info_log
