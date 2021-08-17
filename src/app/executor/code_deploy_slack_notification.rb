@@ -44,11 +44,11 @@ module App
           name: #{event_message[:region]} / #{event_message[:applicationName]} / #{event_message[:deploymentGroupName]}
           id: #{event_message[:deploymentId]}
 
-          created_at:   #{event_message[:createTime]}
+          created_at: #{event_message[:createTime]}
           completed_at: #{event_message[:completeTime]}
 
           trigger: #{event_message[:eventTriggerName]}
-          status:  #{event_message[:status]}
+          status: #{event_message[:status]}
         STR
 
         @slack_text = if exists_error_information?
