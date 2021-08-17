@@ -8,7 +8,7 @@ module App
       include App::Lib::SlackNotification
 
       def execute
-        logger.info(message: "skip code deploy because #{changed_filepath} is not listed.") if code_deploy_config.nil?
+        logger.info(message: 'skip code deploy because not expected event.') unless code_deploy_config_exists?
 
         # see: https://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/CodeDeploy/Client.html#create_deployment-instance_method
         res = client.create_deployment(params_create_deployment)
@@ -49,16 +49,31 @@ module App
         }
       end
 
-      def code_deploy_config
-        @code_deploy_config ||= config[:code_deploy].find do |obj|
-          obj[:filepath] == changed_filepath
-        end
+      def code_deploy_config_exists?
+        !code_deploy_config.nil?
       end
 
-      def changed_filepath
-        raise StandardError, 'too many files changed' if @event['Records'].size > 1
+      def code_deploy_config
+        @code_deploy_config unless @code_deploy_config.nil?
 
-        @changed_filepath ||= @event['Records'].first['s3']['object']['key']
+        event_source = event['Records'].first['eventSource']
+
+        @code_deploy_config = case event_source
+                              when 'aws:s3'
+                                code_deploy_config_from_s3
+                              end
+      end
+
+      def code_deploy_config_from_s3
+        changed_filepath = @event['Records'].first['s3']['object']['key']
+
+        result = config[:code_deploy].find do |obj|
+          obj[:filepath] == changed_filepath
+        end
+
+        logger.info("#{filename} changed in s3  is not listed for config.") if result.nil?
+
+        result
       end
 
       def slack_text(deployment_id)
