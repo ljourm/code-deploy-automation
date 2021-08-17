@@ -8,7 +8,14 @@ module App
         http = Net::HTTP.new(uri.host, uri.port)
         http.use_ssl = true
 
-        http.post(uri.path, { text: text }.to_json, HTTP_HEADERS)
+        response = http.post(uri.path, { text: text }.to_json, HTTP_HEADERS)
+
+        unless response.code == 200
+          raise StandardError,
+                "slack notification is failed. code: #{response.code}, body: #{response.body}"
+        end
+
+        response
       end
     end
   end

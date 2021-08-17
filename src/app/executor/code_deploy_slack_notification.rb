@@ -16,15 +16,7 @@ module App
           },
         )
 
-        response = notify_to_slack(slack_text, ENV['SLACK_WEBHOOK_URI'])
-
-        logger.info(
-          message: 'post result',
-          response: {
-            code: response.code,
-            body: response.body,
-          },
-        )
+        notify_to_slack(slack_text, ENV['SLACK_WEBHOOK_URI'])
       end
 
       private
