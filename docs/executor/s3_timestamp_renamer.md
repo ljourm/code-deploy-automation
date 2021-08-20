@@ -29,11 +29,11 @@
 以下を紐付け
 - `LogWriteAccessForLambdaFunction`
   - [lambda_code_writer](./iam_log_writer.md)
-- `S3ReadAccessForTimestampRenamer`
+- `S3RenameAccessForTimestampRenamer`
 
 ## IAM policies
 
-### `S3ReadAccessForTimestampRenamer`
+### `S3RenameAccessForTimestampRenamer`
 ```json
 {
     "Version": "2012-10-17",
@@ -41,8 +41,10 @@
         {
             "Effect": "Allow",
             "Action": [
+                "s3:PutObject",
                 "s3:GetObject",
-                "s3:GetObjectVersion"
+                "s3:ListBucket",
+                "s3:DeleteObject"
             ],
             "Resource": "arn:aws:s3:::{bucket_name}/*.zip"
         }
