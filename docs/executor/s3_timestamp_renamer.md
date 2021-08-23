@@ -46,7 +46,10 @@
                 "s3:ListBucket",
                 "s3:DeleteObject"
             ],
-            "Resource": "arn:aws:s3:::{bucket_name}/*.zip"
+            "Resource": [
+                "arn:aws:s3:::{bucket_name}/*.zip",
+                "arn:aws:s3:::{bucket_name}"
+            ]
         }
     ]
 }
